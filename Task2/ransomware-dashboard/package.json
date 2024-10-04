@@ -1,0 +1,11 @@
+{
+  "name": "my-project",
+  "version": "1.0.0",
+  
+  "dependencies": {
+    "concurrently": "^7.0.0",
+    "axios": "^1.7.7",
+    "mongoose": "^8.7.0"
+  }
+}
+

@@ -1,0 +1,47 @@
+hcvinay
+0vFte0Solzgxt3fs
+
+mongodb+srv://hcvinay:0vFte0Solzgxt3fs@cluster0.tbvux.mongodb.net/
+
+
+{
+  "username": "adminUser",
+  "password": "password123",
+  "role": "admin"
+}
+
+{
+    "_id": "66fe8379473f4d9776b568db",
+    "username": "adminUser",
+    "role": "admin",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmU4Mzc5NDczZjRkOTc3NmI1NjhkYiIsImlhdCI6MTcyNzk1NjAwNywiZXhwIjoxNzMwNTQ4MDA3fQ.yr9ivug7SCc0NOf7850jR3J0sIx0-7J2mmfmEZ15log"
+}
+
+
+
+
+{
+  "username": "normalUser",
+  "password": "password123",
+  "role": "user"
+}
+
+{
+    "_id": "66fe8394473f4d9776b568de",
+    "username": "normalUser",
+    "role": "user",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmU4Mzk0NDczZjRkOTc3NmI1NjhkZSIsImlhdCI6MTcyNzk1NjAyOSwiZXhwIjoxNzMwNTQ4MDI5fQ.8um6RoOMPlq6vQN9QqVnlQCdjUyXpss1Ix3Za6nEBUo"
+}
+
+
+{
+  "username": "managerUser",
+  "password": "password123",
+  "role": "manager"
+}
+{
+    "_id": "66fea4f71ca36ca460651612",
+    "username": "managerUser",
+    "role": "manager",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZmVhNGY3MWNhMzZjYTQ2MDY1MTYxMiIsImlhdCI6MTcyNzk2NDQwNywiZXhwIjoxNzMwNTU2NDA3fQ.FVsiCBCZcFFB9Svj50l1t4YNF2zE_qPCM59f7Fk9PA4"
+}
