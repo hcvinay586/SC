@@ -13,16 +13,29 @@ const AddProduct = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const role = localStorage.getItem('role');
+      if (!token) {
+        setMessage('No token found. Please log in again.');
+        return;
+      }
+
+      // Convert price to a number
+      const numericPrice = parseFloat(price);
+      
+      // Check if conversion is successful
+      if (isNaN(numericPrice)) {
+        setMessage('Price must be a valid number.');
+        return;
+      }
       const response = await axios.post('http://localhost:5000/api/products', {
         "name": name,
         "description": description,
-        "price": price
+        "price": numericPrice 
       }, {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
-      setMessage('Product added successfully');
+      alert('Product added successfully');
     } catch (err) {
+      console.error('Error adding product:', err);
       setMessage('Error adding product');
     }
   };

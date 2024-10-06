@@ -4,7 +4,7 @@ const { getProducts, getProduct, addProduct } = require('../controllers/productC
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 
 // Only admin can add products
-router.post('/', protect, authorizeRoles('admin'), addProduct);
+router.post('/products', protect, authorizeRoles('admin'), addProduct);
 
 // Both admin and manager can get all products
 router.get('/products', protect, authorizeRoles('admin', 'manager'), getProducts);
