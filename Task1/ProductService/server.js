@@ -9,12 +9,18 @@ const { protect } = require('./middleware/authMiddleware');
 dotenv.config();
 connectDB();
 const app = express();
+// Parse incoming JSON requests
 app.use(express.json());
-app.use(cors({
-    origin: 'http://localhost:3000', // Adjust this to your frontend's URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+
+// Define the CORS options
+const corsOptions = {
+  origin: 'http://localhost:3000', // Allow your frontend app
+  credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+};
+
+// Use the CORS middleware with options
+app.use(cors(corsOptions));
+
 app.use('/api/users', userRoutes);
 app.use('/api', productRoutes);
 

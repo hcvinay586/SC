@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';
+import api from '../utils/axiosInstance';
 import './Login.css';
 
 const Login = ({ onLogin }) => {
@@ -11,13 +10,26 @@ const Login = ({ onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', { "username": userId, "password": password });
-      const { token, role } = response.data;
-      localStorage.setItem('token', token);
+      const response = await api.post('http://localhost:5000/api/users/login', { username: userId, password: password });
+      const { accessToken, role } = response.data;
+      localStorage.setItem('accessToken', accessToken); // Store the access token
       localStorage.setItem('role', role);
-      onLogin(role);
+      localStorage.setItem('user', userId);
+      onLogin(role, userId);
     } catch (err) {
-      setError('Invalid credentials');
+      if (err.response) {
+        // Handle error based on status
+        const { status } = err.response; // Destructure status from response
+        console.error('Error status:', status);
+        setError('Invalid credentials'); // Generic error message
+        if (status === 401) {
+          // Handle unauthorized error specifically
+          setError('Unauthorized. Please check your credentials.');
+        }
+      } else {
+        console.error('Network error:', err.message);
+        setError('Network error. Please try again later.');
+      }
     }
   };
 
