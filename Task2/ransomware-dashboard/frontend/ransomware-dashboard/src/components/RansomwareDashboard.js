@@ -6,7 +6,10 @@ const RansomwareDashboard = () => {
     const [ransomwareList, setRansomwareList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    // eslint-disable-next-line
+    const [duplicateError, setDuplicateError] = useState(null);  // To track duplicate errors
     const [showModal, setShowModal] = useState(false);
+    const [isAdding, setIsAdding] = useState(true);  // Declare and initialize 'isAdding'
     const [currentRansomware, setCurrentRansomware] = useState(null); // For editing
 
     const emptyFormData = {
@@ -51,15 +54,15 @@ const RansomwareDashboard = () => {
     // Handle form submit for adding/updating a record
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // Reset duplicate error on form submit
+        setDuplicateError(null);
+        setError(null);
+
         try {
             const nameArray = Array.isArray(formData.name) 
                 ? formData.name  // If it's already an array, use it directly
                 : formData.name.split(',').map(item => item.trim()).filter(item => item); // Split and trim if it's a string
-            const dataToSubmit = {
-                ...formData,
-                // Ensure names are stored as an array
-                name: nameArray,
-            };
+            const dataToSubmit = {...formData, name: nameArray };
 
             if (currentRansomware) {
                 // Update record
@@ -75,18 +78,28 @@ const RansomwareDashboard = () => {
             setCurrentRansomware(null);
             fetchRansomware(); // Refresh the list after operation
         } catch (err) {
-            console.error('Error saving data:', err);
-            setError('Error saving data ' + formData.name);
+            if (err.response && err.response.status === 400) {
+                console.error('Duplicate entry:', err);
+                // If a duplicate entry error occurred, set duplicateError state
+                setDuplicateError(err.response.data.message || 'Duplicate entry detected');
+            } else {
+                console.error('Error saving data:', err);
+                setError('Error saving data'); // Handle general errors
+            }
         }
     };
 
     // Handle deleting a record
     const handleDelete = async (id) => {
-        try {
-            await axios.delete(`http://localhost:5000/api/ransomware/${id}`);
-            fetchRansomware(); // Refresh the list after deletion
-        } catch (err) {
-            setError('Error deleting record');
+        const confirmDelete = window.confirm("Are you sure you want to delete this record? \nID: " + id);
+        if (confirmDelete) {
+            try {
+                await axios.delete(`http://localhost:5000/api/ransomware/${id}`);
+                fetchRansomware(); // Refresh the list after deletion
+            } catch (err) {
+                console.error('Error deleting record:', err);
+                setError('Error deleting record');
+            }
         }
     };
 
@@ -94,15 +107,18 @@ const RansomwareDashboard = () => {
     const openModal = (ransomware = null) => {
         if (ransomware) {
             setCurrentRansomware(ransomware);
+            setIsAdding(false);  // We're editing, not adding
             setFormData({
                 name: ransomware.name.join(', '),
                 extensions: ransomware.extensions,
                 encryptionAlgorithm: ransomware.encryptionAlgorithm || '',
             });
         } else {
+            setIsAdding(true);  // We're adding a new record
             setFormData(emptyFormData);
             setCurrentRansomware(null);
         }
+        setDuplicateError(null);
         setShowModal(true);
     };
 
@@ -111,6 +127,7 @@ const RansomwareDashboard = () => {
         setFormData(emptyFormData);
         setCurrentRansomware(null);
         setShowModal(false);
+        setDuplicateError(null);
     };
 
     if (loading) return <div>Loading...</div>;
@@ -120,7 +137,6 @@ const RansomwareDashboard = () => {
         <div className="container">
             <h1>Ransomware Dashboard</h1>
             <Button variant="primary" onClick={() => openModal()}>Add Ransomware</Button>
-
             <table className="table mt-4">
                 <thead>
                     <tr>
@@ -151,6 +167,11 @@ const RansomwareDashboard = () => {
                     <Modal.Title>{currentRansomware ? 'Edit Ransomware' : 'Add Ransomware'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    {duplicateError && (
+                        <div className="alert alert-danger" role="alert">
+                            {duplicateError}
+                        </div>
+                    )}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group>
                             <Form.Label>Name</Form.Label>

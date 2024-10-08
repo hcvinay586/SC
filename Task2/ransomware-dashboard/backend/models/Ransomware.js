@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const ransomwareSchema = new mongoose.Schema({
-    name: [String],
+    name: {
+        type: [String],
+        required: true,
+        unique: true,  // Enforce uniqueness
+    },
     extensions: String,
     extensionPattern: String,
     ransomNoteFilenames: String,
@@ -16,6 +20,8 @@ const ransomwareSchema = new mongoose.Schema({
     iocs: String,
     snort: String,
 });
+
+ransomwareSchema.index({ name: 1 }, { unique: true });
 
 const Ransomware = mongoose.model('Ransomware', ransomwareSchema);
 
